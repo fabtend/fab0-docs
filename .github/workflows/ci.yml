@@ -1,5 +1,5 @@
 # Checks every pull request: types, content and the static build. Deploys are Cloudflare Workers Builds', not this
-# workflow's: it builds main into production on every push and uploads a preview version of every other branch.
+# workflow's: it builds main into production on every push. Other branches get no preview.
 name: CI
 
 on:

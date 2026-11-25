@@ -14,9 +14,9 @@ The public documentation of fab0, served at https://docs.fab0.dev. An Astro Star
 ## Deploy
 
 Cloudflare Workers Builds is connected to this repository: every push to `main` builds (`pnpm build`) and deploys
-(`npx wrangler deploy`) to production at `docs.fab0.dev`, and every other branch uploads a preview version with its
-own URL. `.github/workflows/ci.yml` checks each pull request. No Cloudflare token is kept in GitHub. Roll back with
-`pnpm exec wrangler rollback`.
+(`npx wrangler deploy`) to production at `docs.fab0.dev`. Other branches aren't built and have no preview URL; check
+a change locally with `pnpm build` and `pnpm preview`. `.github/workflows/ci.yml` checks each pull request. No
+Cloudflare token is kept in GitHub. Roll back with `pnpm exec wrangler rollback`.
 
 ## Content
 
