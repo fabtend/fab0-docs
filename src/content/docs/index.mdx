@@ -1,0 +1,54 @@
+---
+title: fab0 documentation
+description: fab0 runs the line of your AI software factory and keeps the record of every run. Start by chat, with one connector.
+template: splash
+hero:
+  title: Run your software factory by chat
+  tagline: You describe how your work should move. fab0 runs that line, hands each step to your agents and people, and keeps the record of everything that happened. It decides nothing for you.
+  actions:
+    - text: Quickstart
+      link: /quickstart/
+      icon: right-arrow
+      variant: primary
+    - text: Concepts
+      link: /concepts/
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## What fab0 does
+
+<CardGrid>
+	<Card title="You describe the line" icon="pencil">
+		Say what starts the work, who or what does each step, and who decides. Claude writes it down as a
+		pipeline, and fab0 checks it before anything runs.
+	</Card>
+	<Card title="fab0 runs it" icon="rocket">
+		Each step goes to the worker you named: an agent behind a URL, a Claude Code routine, or a person's
+		queue. Retries, deadlines and loops are part of the pipeline, not of a prompt.
+	</Card>
+	<Card title="You always know where work stands" icon="list-format">
+		Ask "what's going on?" at any time. fab0 says what is running, what waits on whom, and what failed,
+		and keeps the full record of each run.
+	</Card>
+	<Card title="It decides nothing for you" icon="approve-check">
+		fab0 never judges, approves or merges your work. Your people and agents make every decision, and the
+		record names who made it.
+	</Card>
+</CardGrid>
+
+## Start here
+
+<CardGrid>
+	<LinkCard
+		title="Quickstart"
+		description="Add the fab0 connector, say “set up fab0”, and finish a first run in a few minutes."
+		href="/quickstart/"
+	/>
+	<LinkCard
+		title="Concepts"
+		description="Pipelines, runs, steps, executors and signals: the few ideas fab0 is built on."
+		href="/concepts/"
+	/>
+</CardGrid>

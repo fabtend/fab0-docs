@@ -1,0 +1,4 @@
+# Packages whose install scripts may run: wrangler's bundler and runtime.
+allowBuilds:
+  esbuild: true
+  workerd: true

@@ -1,0 +1,127 @@
+---
+title: Quickstart
+description: Add the fab0 connector, say “set up fab0”, and finish your first run, all by chat.
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+You set up fab0 by talking to Claude. Nothing else is installed: the fab0 server carries its own guide, and
+Claude reads it and walks you through each step. This page shows what that walk looks like, so you know what
+to expect.
+
+You need a GitHub account and Claude (claude.ai, or Claude Code in the desktop app or a terminal).
+
+<Steps>
+
+1. ### Add the fab0 connector
+
+    <Tabs syncKey="host">
+    	<TabItem label="claude.ai">
+    		Open **Settings → Connectors** and add a custom connector:
+
+    		- **Name:** `fab0`
+    		- **URL:** `https://mcp.fab0.dev/mcp`
+    		- Leave the OAuth fields empty.
+
+    		Press **Connect**. It switches the connector on and asks for no sign-in yet.
+    	</TabItem>
+    	<TabItem label="Claude Code">
+    		Install the fab0 plugin:
+
+    		```text
+    		/plugin marketplace add fabtend/claude-plugin
+    		/plugin install fab0@fab0
+    		```
+
+    		Or, without the plugin, add the same server from a terminal:
+
+    		```bash
+    		claude mcp add --transport http fab0 https://mcp.fab0.dev/mcp
+    		```
+    	</TabItem>
+    </Tabs>
+
+2. ### Say “set up fab0”
+
+    Claude answers as fab0's **Foreman**: the voice of fab0 in your conversation. It first tells you in a few
+    sentences what fab0 is and what setting it up involves, then goes one step at a time, and asks before every
+    call that changes something.
+
+    The Foreman decides nothing. Your pipeline says who is next, and the Foreman sends only what you ask for, as
+    you.
+
+3. ### Sign in with GitHub
+
+    The first call that needs to know who you are asks you to sign in:
+
+    - **claude.ai:** the call is refused with “This connector requires authentication.” Open **Settings →
+      Connectors** and connect the fab0 connector again (disconnect it first if it shows as connected). fab0 asks
+      “Allow Claude to use fab0?”, then GitHub's sign-in opens.
+    - **Claude Code desktop app:** a card asks you to sign in. Press it.
+    - **Claude Code in a terminal:** run `/mcp`, choose the fab0 server and sign in.
+
+    GitHub asks you to authorize fab0 to read your organizations and your role in each. fab0 reads that to find
+    the accounts you can use, and nothing else.
+
+    <Aside>
+    	An organization that restricts OAuth Apps appears only once one of its owners approves fab0 in the
+    	organization's settings, under Third-party access.
+    </Aside>
+
+4. ### Pick the account
+
+    Your pipelines live in one GitHub account, your user account or an organization. fab0 calls it the
+    **tenant**. A first try is simplest in your own user account.
+
+    Only an admin of the account puts pipelines and sets secrets: you, for your own user account, or an admin of
+    the organization. Other members can read runs, work their queue and send signals.
+
+5. ### Describe your line
+
+    Tell Claude, in your own words, how the work should move:
+
+    - what starts a run: you, an agent, a GitHub event such as an issue labelled `Ready`, or another system's
+      webhook;
+    - each step, and who or what does it: an agent behind a URL, a Claude Code routine, or a person;
+    - each decision: who makes it, and where each answer leads;
+    - what ends a run, as success and as failure.
+
+    For a first run, ask for the **review-loop** recipe. It needs no secret, no agent and no GitHub: one step that
+    you work yourself, and a review that you decide.
+
+    Claude writes the pipeline, validates it until no error is left, shows it to you and says in a few lines what
+    it does. When you agree, it **puts** the pipeline, and it becomes the active version.
+
+6. ### Start a run and work it
+
+    Say “start a run”. Claude starts it and tells you what it waits on and on whom. Starting a run and taking its
+    step are two separate asks, so nothing more happens until you say so.
+
+    With the review-loop recipe:
+
+    1. Say “take the step”. Claude claims it from your queue, does the work with you, and completes it with a
+       short summary.
+    2. The run now waits in `review`. Say “approve it”, “ask for changes” or “reject it”. Changes send the run
+       back to the step for another visit.
+
+7. ### Ask what's going on
+
+    Ask “what's going on?” whenever you like. Claude reads the **floor**, every active run at once, and tells you
+    in plain words what is running, what waits on whom and what failed. Ask about one run to see its full record.
+
+</Steps>
+
+## If your agents read untrusted input
+
+<Aside type="caution" title="One connector serves you and your routines">
+	Once you sign in on the fab0 connector from a claude.ai chat, your Claude Code routines carry your session,
+	and an agent could act as you by leaving its step id out. If your agents read issues or pages that anyone
+	can write, give your routines a second connector to the same URL, under another name, that is never signed
+	in. The Foreman tells you how.
+</Aside>
+
+## Next
+
+- [Concepts](/concepts/): pipelines, runs, steps, executors and signals.
+- To change your line, ask Claude to change the pipeline and put it again. Runs already started keep the
+  version they began with; new runs take the new one.
