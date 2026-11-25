@@ -1,0 +1,62 @@
+/*
+ * fab0's brand on Starlight. The palette and fonts are fab0.dev's (fabtend/fab0-website, docs/design-system.md):
+ * pumpkin-spice is the brand accent, charcoal-blue the ink and dark surfaces.
+ * Starlight's gray scale runs from --sl-color-white (strongest text) to --sl-color-black (page background).
+ */
+
+:root {
+	--sl-font: 'Roboto Variable', system-ui, sans-serif;
+	--sl-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+}
+
+/* Dark, the default. */
+:root {
+	--sl-color-accent-low: #3c1800; /* pumpkin-spice-100 */
+	--sl-color-accent: #fe7f2d; /* pumpkin-spice-500 */
+	--sl-color-accent-high: #feb482; /* pumpkin-spice-700 */
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #e5e5e5; /* neutral-200, the site's foreground */
+	--sl-color-gray-2: #c9dbe6; /* charcoal-blue-900 */
+	--sl-color-gray-3: #92b6cd; /* charcoal-blue-800, muted text */
+	--sl-color-gray-4: #5c92b4; /* charcoal-blue-700 */
+	--sl-color-gray-5: #3c6883; /* charcoal-blue-600, borders */
+	--sl-color-gray-6: #15252e; /* charcoal-blue-300 */
+	--sl-color-black: #070c0f; /* charcoal-blue-100, the page */
+	/* Notes are fab0's `info`: charcoal-blue, not Starlight's blue. */
+	--sl-color-blue-low: #1c313d; /* charcoal-blue-400 */
+	--sl-color-blue: #5c92b4; /* charcoal-blue-700 */
+	--sl-color-blue-high: #c9dbe6; /* charcoal-blue-900 */
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #ffe6d5; /* pumpkin-spice-900 */
+	--sl-color-accent: #b44801; /* pumpkin-spice-300: 4.5:1 on white for links */
+	--sl-color-accent-high: #783001; /* pumpkin-spice-200 */
+	--sl-color-white: #070c0f; /* charcoal-blue-100 */
+	--sl-color-gray-1: #233d4d; /* charcoal-blue-500, the site's foreground */
+	--sl-color-gray-2: #1c313d; /* charcoal-blue-400 */
+	--sl-color-gray-3: #3c6883; /* charcoal-blue-600, muted text */
+	--sl-color-gray-4: #5c92b4; /* charcoal-blue-700 */
+	--sl-color-gray-5: #c9dbe6; /* charcoal-blue-900, borders */
+	--sl-color-gray-6: #f5f5f5; /* neutral-100 */
+	--sl-color-gray-7: #fafafa; /* neutral-50 */
+	--sl-color-black: #ffffff;
+	--sl-color-blue-low: #c9dbe6; /* charcoal-blue-900 */
+	--sl-color-blue: #3c6883; /* charcoal-blue-600 */
+	--sl-color-blue-high: #15252e; /* charcoal-blue-300 */
+}
+
+/* Headings in Outfit, as on fab0.dev. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top,
+.hero h1,
+.site-title {
+	font-family: 'Outfit Variable', var(--sl-font);
+}
+
+/* The primary hero action: pumpkin with black text, as fab0.dev's primary button, in both themes. */
+.hero .sl-link-button.primary {
+	background-color: #fe7f2d;
+	border-color: #fe7f2d;
+	color: #000000;
+}

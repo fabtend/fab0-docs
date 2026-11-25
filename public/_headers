@@ -1,0 +1,11 @@
+# Cloudflare applies these to the files in dist/. The site loads nothing from another origin: Starlight's own scripts,
+# styles and fonts are on this host. 'unsafe-inline' covers Starlight's small inline scripts (theme, tabs, search
+# dialog) and inline styles; 'wasm-unsafe-eval' lets Pagefind's search run its WebAssembly.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,135 @@
+---
+title: Concepts
+description: The few ideas fab0 is built on, from the software factory to pipelines, runs, steps, executors and signals.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## The software factory
+
+A **software factory** produces software as a line: orders come in, fixed stations do the work, gates decide,
+and the line is written down, measured and improved. In an **AI software factory**, agents staff most of the
+stations and people stand at the gates.
+
+fab0 is the factory's controller and its ledger. It holds the line and where each piece of work stands on it,
+and it records everything that happened. You bring the workers: your agents, your services and your people.
+
+<Aside title="fab0 decides nothing">
+	fab0 never judges, approves, merges or labels your work, and never says how a step is done. A decision is a
+	state that waits for a signal, and your pipeline says who may send it.
+</Aside>
+
+## Pipelines
+
+A **pipeline** is your line, written down as a state machine in YAML. You don't need to write one by hand:
+describe your line to Claude and it writes, validates and puts the pipeline for you. It helps to know what is
+in one.
+
+```yaml
+# yaml-language-server: $schema=https://schema.fab0.dev/pipeline.v2.json
+version: 2
+name: review-loop
+description: One step, reviewed by a person, redone on changes.
+people: { reviewers: [octocat] }
+executors:
+  worker: { type: manual, by: [octocat] }
+start: [{ on: api }]
+limits: { visits: 5 }
+states:
+  work:
+    run: worker
+    retries: 1
+    outputs: { type: object, required: [summary], properties: { summary: { type: string } } }
+    on: { done: review, failed: abandoned }
+  review:
+    timeout: 7d
+    on:
+      approve: { to: done, by: [reviewers] }
+      changes: { to: work, by: [reviewers] }
+      reject: { to: abandoned, by: [reviewers] }
+      timeout: abandoned
+  done: { end: succeeded }
+  abandoned: { end: failed }
+```
+
+Reading it from the top:
+
+- **`executors`** names who works the steps. Here `worker` is a person's queue.
+- **`start`** says how runs begin. `on: api` means you, or an agent, start one by asking.
+- **`states`** is the line. The first state, `work`, runs the `worker` step; when it is `done`, the run moves to
+  `review`, which waits up to seven days for a reviewer to `approve`, ask for `changes` or `reject`.
+- **`limits`** caps the loop: `work` can be visited at most five times in one run.
+
+When a pipeline is **put**, it becomes its name's active version. A version is the hash of the pipeline's text,
+and a run keeps the version it started with for its whole life, so changing a pipeline never disturbs runs
+already under way. A put never deletes anything; a pipeline is retired only when you ask.
+
+In a repository, the convention is one pipeline per file, at `.fab0/pipelines/<name>.yml`. fab0 never reads
+your repository: what is put is what runs.
+
+## Runs, states and visits
+
+A **run** is one execution of a pipeline. It is always in exactly one **state**, which either runs a step,
+waits for signals, or ends the run as `succeeded` or `failed`.
+
+Each entry into a state is a **visit**. A loop back, such as `changes` returning to `work`, starts a new visit
+with fresh attempts, and the step sees the payload of the signal that sent it back, so a reviewer's feedback
+travels with the loop.
+
+A run may have a **subject**: the outside thing it is about, such as a GitHub issue. A piece of work belongs to
+one active run at a time.
+
+## Steps and executors
+
+A state with `run` fires a **step** at an **executor** when the run enters it. Each try of a step is an
+**attempt**, with its own deadline; `retries` says how many more attempts a visit gets.
+
+| Executor | What happens |
+| --- | --- |
+| `manual` | Nothing is sent. The step waits in the queue of the people the executor names. One of them claims it, works it, and completes or fails it. |
+| `http` | fab0 calls a URL you own, with a secret you set, and your service does the step. |
+| `claude-routine` | fab0 fires one of your Claude Code routines, which works the step in the cloud with fab0's tools. |
+
+fab0 runs no agent and no code of yours. A fire carries only a **step id**: a credential for that one attempt,
+which the worker uses to read the step, do it, and finish it with `complete` or `fail`. When the attempt ends,
+the step id stops working.
+
+A step can declare **`outputs`**, a JSON Schema for what it must report. fab0 checks the shape of the report,
+never that the work exists, so for work that lives in a repository the step opens a pull request and the run
+waits for GitHub's own review and merge.
+
+## Signals and decisions
+
+A **signal** is the only thing that moves a run: a name, an id, a payload and who sent it. A run moves when a
+signal names a transition of its current state, and `by` says who may send it.
+
+| Kind | Examples | Sent by |
+| --- | --- | --- |
+| Engine | `done`, `failed`, `timeout`, `children.done` | fab0, when a step finishes or a deadline passes |
+| GitHub | `github.pull_request.closed`, `github.issues.labeled` | GitHub's own events |
+| External | `ext.<source>.<name>` | another system, through a signed webhook |
+| Your own | `approve`, `changes`, `retry` | people and agents |
+
+A signal that names no transition of the current state is recorded with the reason and ignored, so a late or
+stray signal is harmless.
+
+## Tenants and people
+
+Your pipelines live in one GitHub account, a user or an organization: the **tenant**. Every member of it can
+read its runs, work their queue and send the signals they are allowed to. Only an admin puts pipelines and sets
+secrets.
+
+A **secret**, such as the token for an `http` executor, is stored by name and is write-only. You set it yourself,
+in a terminal; its value never passes through Claude.
+
+## The Foreman
+
+When you talk to fab0 through Claude, Claude plays the **Foreman**: it reads runs and tells you what it reads in
+plain words, writes pipelines with you, and sends only what you ask for, as you. It is not an actor of its own,
+and the record names you for what it sends.
+
+## The record
+
+fab0 keeps every signal, transition and attempt of every run, with the usage and cost its agents report and
+each attempt's duration as fab0 measured it. The **floor** is every active run of a tenant at once: what is
+running, what waits on whom, and what failed.

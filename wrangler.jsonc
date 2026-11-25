@@ -1,0 +1,18 @@
+// The fab0 documentation at docs.fab0.dev: a Worker that serves the static Astro Starlight build in dist/, with no
+// Worker script. Cloudflare Workers Builds builds and deploys main on every push, and uploads a preview version for
+// every other branch.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "fab0-docs",
+  "compatibility_date": "2026-11-25",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths get dist/404.html with a 404 status.
+    "not_found_handling": "404-page"
+  },
+  // docs.fab0.dev is a Worker custom domain: Cloudflare owns its DNS record and certificate.
+  "routes": [{ "pattern": "docs.fab0.dev", "custom_domain": true }],
+  // Workers Builds' preview URL for each pull request lives on the workers.dev subdomain.
+  "workers_dev": true,
+  "preview_urls": true
+}
