@@ -22,7 +22,7 @@ export default defineConfig({
 			],
 			social: [
 				{ icon: 'external', label: 'fab0.dev', href: 'https://fab0.dev' },
-				{ icon: 'github', label: 'The fab0 plugin on GitHub', href: 'https://github.com/fabtend/claude-plugin' },
+				{ icon: 'github', label: 'These docs on GitHub', href: 'https://github.com/fabtend/fab0-docs/' },
 			],
 			customCss: [
 				'@fontsource-variable/outfit',
